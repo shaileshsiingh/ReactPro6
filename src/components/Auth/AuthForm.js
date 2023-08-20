@@ -18,44 +18,42 @@ const AuthForm = () => {
 
     const enteredEmail = emailInputRef.current.value;
     const enteredPassword = passwordInputRef.current.value;
-setLoading(true)
-    if (!isLogin) {
-      try {
-        const response = await fetch(
-          'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCipmPxx-C8SxvVI6SQNJ1aChk38b5Z7n0',
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              email: enteredEmail,
-              password: enteredPassword,
-              returnSecureToken: true,
-            }),
-          }
-        );
-        setLoading(false)
 
-        if (!response.ok) {
-          const data = await response.json();
-          let errorMessage = 'Authentication Failed'
-          if(data&&data.error.message&&data.error){
-             errorMessage = data.error.message
-          }
-          alert(errorMessage)
-          // Handle error here, e.g., display error message to the user
-        } else {
-          // Handle successful response here, e.g., redirect, display success message, etc.
+    setLoading(true);
+
+    try {
+      const response = await fetch(
+        isLogin
+          ? 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCipmPxx-C8SxvVI6SQNJ1aChk38b5Z7n0'
+          : 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCipmPxx-C8SxvVI6SQNJ1aChk38b5Z7n0',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: enteredEmail,
+            password: enteredPassword,
+            returnSecureToken: true,
+          }),
         }
-      } catch (error) {
-        console.error(error);
-        // Handle error here, e.g., display error message to the user
-      }
-    }
+      );
 
-    // Add your logic for the isLogin case here
+      const data = await response.json();
+      console.log(data)
+
+      if (!response.ok) {
+        alert(data.error.message )
+      }
+
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+      alert('An error occurred. Please try again later.')
+      setLoading(false);
+    }
   };
+
 
   return (
     <section className={classes.auth}>
@@ -70,17 +68,19 @@ setLoading(true)
           <input type='password' id='password' required ref={passwordInputRef} />
         </div>
         <div className={classes.actions}>
-        {loading ? (
-            <div className={classes.loader}>Loading...</div>
-          ) : (
-            <button
-              type='submit'
-              className={classes.toggle}
-              onClick={switchAuthModeHandler}
-            >
-              {isLogin ? 'Create new account' : 'Login with existing account'}
+          {!loading && (
+            <button type='submit'>
+              {isLogin ? 'Login' : 'Create a new account'}
             </button>
           )}
+          {loading && <p>Sending request...</p>}
+          <button
+            type='button'
+            className={classes.toggle}
+            onClick={switchAuthModeHandler}
+          >
+            {isLogin ? 'Create new account' : 'Login with existing account'}
+          </button>
         </div>
       </form>
     </section>
@@ -88,3 +88,8 @@ setLoading(true)
 };
 
 export default AuthForm;
+
+ 
+
+
+//AIzaSyCipmPxx-C8SxvVI6SQNJ1aChk38b5Z7n0
