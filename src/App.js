@@ -5,9 +5,11 @@ import Layout from './components/Layout/Layout';
 import UserProfile from './components/Profile/UserProfile';
 import AuthPage from './pages/AuthPage';
 import HomePage from './pages/HomePage';
+import { AuthContextProvider } from './store/auth-context';
 
 function App() {
   return (
+    <AuthContextProvider>
     <Router>
       <Layout>
         <Switch>
@@ -17,6 +19,7 @@ function App() {
         </Switch>
       </Layout>
     </Router>
+    </AuthContextProvider>
   );
 }
 
