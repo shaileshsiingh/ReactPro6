@@ -12,6 +12,7 @@ const history = useHistory()
 const isLoggedIn = authCtx.isLoggedIn
 const logoutHandler = () =>{
   authCtx.logOut()
+  localStorage.removeItem('token')
   history.replace('/auth')
 }
 
